@@ -38,5 +38,4 @@ class TaskHandlerTest {
                 Arguments.of("ABCDEFG", "TDD", UUID.randomUUID(), 2, 1)
         );
     }
-
 }

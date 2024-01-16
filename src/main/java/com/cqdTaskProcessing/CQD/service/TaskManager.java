@@ -9,6 +9,5 @@ import java.util.UUID;
 public interface TaskManager {
     void create(String pattern, String input, UUID taskId);
     Optional<Task> getTaskById(UUID id);
-
     List<Task> getTasks();
 }

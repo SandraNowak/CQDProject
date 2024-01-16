@@ -6,6 +6,8 @@ import com.cqdTaskProcessing.CQD.model.Task;
 import com.cqdTaskProcessing.CQD.rest.model.RestTask;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -31,5 +33,13 @@ public class RestMapper {
                         .typos(restTask.getTypos())
                         .build())
                 .build();
+    }
+
+    public List<RestTask> toRestTaskList(List<Task> taskList) {
+        List<RestTask> restTaskList =  new ArrayList<>();
+        for (Task task:taskList) {
+            restTaskList.add(toRestTask(task));
+        }
+        return restTaskList;
     }
 }

@@ -1,6 +1,7 @@
 package com.cqdTaskProcessing.CQD.service;
 
 import com.cqdTaskProcessing.CQD.model.Task;
+import com.cqdTaskProcessing.CQD.rest.model.TaskResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 @Service
 public interface TaskService {
 
-    String create(String pattern, String input);
+    TaskResponse create(String pattern, String input);
     Task get(String id);
     List<Task> getAll();
 }

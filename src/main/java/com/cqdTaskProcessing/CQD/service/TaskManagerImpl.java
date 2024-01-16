@@ -13,7 +13,7 @@ public class TaskManagerImpl implements TaskManager {
     @Override
     @Async
     public void create(String pattern, String input, UUID taskId) {
-        TaskHandler taskHandler = new TaskHandler(input, pattern, taskId);
+        TaskHandler taskHandler = new TaskHandler(pattern, input, taskId);
         taskHandler.run();
 
         tasks.add(taskHandler.getTask());

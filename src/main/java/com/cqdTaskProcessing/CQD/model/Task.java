@@ -16,7 +16,6 @@ public class Task {
     private Status status;
     private Result result;
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,7 +1,9 @@
-services:
-  web:
-    build: .
+version: "1.0"
+
+cqd:
+    build:
+      context: .
+      target: cqd
+    image: cqd
     ports:
-      - "8000:5000"
-  redis:
-    image: "redis:alpine"
+      - 8010:8080

@@ -77,5 +77,4 @@ public class TaskHandler implements Runnable{
 
         return typos;
     }
-
 }
