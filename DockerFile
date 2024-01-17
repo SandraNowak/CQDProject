@@ -1,0 +1,3 @@
+FROM openjdk:8-alpine
+ADD cqd/build/libs/*.jar cqd.jar
+ENTRYPOINT ["java","-jar","cqd.jar"]

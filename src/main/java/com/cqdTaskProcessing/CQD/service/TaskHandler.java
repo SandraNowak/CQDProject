@@ -6,8 +6,12 @@ import com.cqdTaskProcessing.CQD.model.Task;
 import lombok.Getter;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class TaskHandler implements Runnable{
+public class TaskHandler implements Future {
 
     private final String pattern;
     private final String input;
@@ -24,7 +28,6 @@ public class TaskHandler implements Runnable{
         this.taskId = taskId;
     }
 
-    @Override
     public void run() {
         try {
             Thread.sleep(5000L);
@@ -76,5 +79,30 @@ public class TaskHandler implements Runnable{
         }
 
         return typos;
+    }
+
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        return false;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return false;
+    }
+
+    @Override
+    public boolean isDone() {
+        return progress == 100;
+    }
+
+    @Override
+    public Task get() throws InterruptedException, ExecutionException {
+        return task;
+    }
+
+    @Override
+    public Task get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        return task;
     }
 }
