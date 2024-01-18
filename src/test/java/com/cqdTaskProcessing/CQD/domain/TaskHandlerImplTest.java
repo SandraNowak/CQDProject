@@ -1,26 +1,38 @@
 package com.cqdTaskProcessing.CQD.domain;
 
+import com.cqdTaskProcessing.CQD.exception.ApiException;
+import com.cqdTaskProcessing.CQD.exception.ErrorCode;
 import com.cqdTaskProcessing.CQD.model.Task;
 import com.cqdTaskProcessing.CQD.service.TaskHandler;
+import com.cqdTaskProcessing.CQD.service.TaskHandlerImpl;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TaskHandlerTest {
+@SpringBootTest
+class TaskHandlerImplTest {
+
+    @Autowired
+    TaskHandler taskCreator;
 
     @ParameterizedTest
     @MethodSource("typosData")
     public void shouldFoundTypo(String input, String pattern,UUID taskId ,int expectedTypos, int expectedPosition) {
 
-        TaskHandler taskCreator = new TaskHandler(pattern, input, taskId);
-        taskCreator.run();
-        Task task = taskCreator.getTask();
+        taskCreator.run(pattern, input, taskId);
+        Optional<Task> optionalTask = taskCreator.getTask(taskId);
+        Task task = optionalTask.orElseThrow(() ->
+                new ApiException(String.format("Not Found task with id: %s", taskId), ErrorCode.NOT_FOUND)
+        );
 
         //then
         assertAll(

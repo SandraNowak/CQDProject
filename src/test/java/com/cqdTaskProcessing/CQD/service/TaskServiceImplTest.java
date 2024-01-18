@@ -45,24 +45,35 @@ class TaskServiceImplTest {
 
     @Test
     void shouldGetExistingTask() throws InterruptedException {
+        int progress = 0;
+        Task responsedTask;
         //given
         TaskResponse postResponse = taskService.create("BCD", "ABCD");
 
-        Thread.sleep(7000);
-
+        Thread.sleep(1700);
         //when
-        Task responsedTask = taskService.get(postResponse.getTaskId());
+        do {
+            responsedTask = taskService.get(postResponse.getTaskId());
+            progress = responsedTask.getStatus().getProgress();
+        } while(progress!=100);
 
         //then
+        Task finalResponsedTask = responsedTask;
         assertAll(
-                () -> assertEquals(responsedTask.getId().toString(), postResponse.getTaskId()),
-                () -> assertEquals(responsedTask.getResult().getTypos(), 0),
-                () -> assertEquals(responsedTask.getResult().getPosition(), 1)
+                () -> assertEquals(finalResponsedTask.getId().toString(), postResponse.getTaskId()),
+                () -> assertEquals(0, finalResponsedTask.getResult().getTypos()),
+                () -> assertEquals(1, finalResponsedTask.getResult().getPosition()),
+                () -> assertEquals(100, finalResponsedTask.getStatus().getProgress())
         );
     }
 
     @Test
     void shouldGetAllTasks() throws InterruptedException {
+        int progress1 = 0;
+        int progress2 = 0;
+        List<Task> responseTaskList;
+        Task response1;
+        Task response2;
         int expectedTypos1 = 0;
         int expectedPosition1 = 1;
         int expectedTypos2 = 1;
@@ -74,28 +85,34 @@ class TaskServiceImplTest {
         Thread.sleep(7000);
 
         //when
-        List<Task> responseTaskList = taskService.getAll();
+        do{
+        responseTaskList = taskService.getAll();
         var returnedPostResponse1 = responseTaskList.stream()
                 .filter(restTask -> restTask.getId().toString().equals(postResponse1.getTaskId())).findFirst();
         var returnedPostResponse2 = responseTaskList.stream()
                 .filter(restTask -> restTask.getId().toString().equals(postResponse2.getTaskId())).findFirst();
-        Task response1 = returnedPostResponse1.orElseThrow(() ->
+        response1 = returnedPostResponse1.orElseThrow(() ->
                 new ApiException(String.format("Not Found task with id: %s", postResponse1.getTaskId()), ErrorCode.NOT_FOUND)
         );
-        Task response2 = returnedPostResponse2.orElseThrow(() ->
+        progress1 = response1.getStatus().getProgress();
+        response2 = returnedPostResponse2.orElseThrow(() ->
                 new ApiException(String.format("Not Found task with id: %s", postResponse2.getTaskId()), ErrorCode.NOT_FOUND)
         );
+        progress2 = response2.getStatus().getProgress();
+        } while(progress1!=100 && progress2!=100);
 
         //then
+        Task finalResponse = response1;
+        Task finalResponse1 = response2;
         assertAll(
-                () -> assertEquals(postResponse1.getTaskId(), response1.getId().toString()),
-                () -> assertEquals(expectedTypos1, response1.getResult().getTypos()),
-                () -> assertEquals(expectedPosition1, response1.getResult().getPosition()),
-                () -> assertTrue(response1.getStatus().getProgress()>0),
-                () -> assertEquals(postResponse2.getTaskId(), response2.getId().toString()),
-                () -> assertEquals(expectedTypos2, response2.getResult().getTypos()),
-                () -> assertEquals(expectedPosition2, response2.getResult().getPosition()),
-                () -> assertTrue(response2.getStatus().getProgress()>0)
+                () -> assertEquals(postResponse1.getTaskId(), finalResponse.getId().toString()),
+                () -> assertEquals(expectedTypos1, finalResponse.getResult().getTypos()),
+                () -> assertEquals(expectedPosition1, finalResponse.getResult().getPosition()),
+                () -> assertEquals(100, finalResponse.getStatus().getProgress()),
+                () -> assertEquals(postResponse2.getTaskId(), finalResponse1.getId().toString()),
+                () -> assertEquals(expectedTypos2, finalResponse1.getResult().getTypos()),
+                () -> assertEquals(expectedPosition2, finalResponse1.getResult().getPosition()),
+                () -> assertEquals(100, finalResponse1.getStatus().getProgress())
         );
     }
 }

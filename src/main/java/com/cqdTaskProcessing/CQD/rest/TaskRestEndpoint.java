@@ -29,7 +29,7 @@ public class TaskRestEndpoint {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RestTask> get(@PathVariable String id){
+    public ResponseEntity<RestTask> get(@PathVariable String id) {
         return new ResponseEntity<>(mapper.toRestTask(taskService.get(id)), HttpStatus.OK);
     }
 
